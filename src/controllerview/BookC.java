@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Spinner;
 import javafx.stage.Stage;
+import model.BusinessLogic;
 import model.ImportEvents;
 
 import java.io.IOException;
@@ -20,6 +21,8 @@ public class BookC {
     private Spinner seatsSpinner;
     @FXML
     private Button bookBTN;
+
+    private BusinessLogic model;
 
     public static void show(Stage stage) {
         try {
@@ -38,8 +41,19 @@ public class BookC {
     }
 
     @FXML
+    public void initialize(){
+        model = new BusinessLogic();
+        updateChoiceBox();
+    }
+
+    @FXML
     public void importEvent(){
         ImportEvents importEvents = new ImportEvents();
         importEvents.tryImport();
+        updateChoiceBox();
+    }
+
+    public void updateChoiceBox(){
+        eventCB.setItems(model.getChoicesFromDatabase());
     }
 }

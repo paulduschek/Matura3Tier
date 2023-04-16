@@ -13,7 +13,7 @@ public class Database {
     private String url;
     private String username;
     private String password;
-    private PreparedStatement pstmtSelect;
+    private PreparedStatement pstmtSelectNameDate;
     private PreparedStatement pstmtSelectAll;
     private PreparedStatement pstmtInsert;
     private PreparedStatement pstmtUpdate;
@@ -56,7 +56,7 @@ public class Database {
     public static void open(boolean createPrepStatements) throws SQLException {
         instance = new Database();
         if(createPrepStatements){
-            instance.createPstmtSelect();
+            instance.createPstmtSelectNameDate();
             instance.createPstmtInsert();
             instance.createPstmtUpdate();
             instance.createPstmtSelectAll();
@@ -81,8 +81,8 @@ public class Database {
         return statement;
     }
 
-    public PreparedStatement getPstmtSelect() {
-        return pstmtSelect;
+    public PreparedStatement getPstmtSelectNameDate() {
+        return pstmtSelectNameDate;
     }
 
     public PreparedStatement getPstmtSelectAll() {
@@ -104,9 +104,9 @@ public class Database {
         pstmtSelectAll = connection.prepareStatement(sql);
     }
 
-    private void createPstmtSelect() throws SQLException {
-        String sql = " select name, date, numOfSeats from Event where id = ?";
-        pstmtSelect = connection.prepareStatement(sql);
+    private void createPstmtSelectNameDate() throws SQLException {
+        String sql = " select name, date from Event";
+        pstmtSelectNameDate = connection.prepareStatement(sql);
     }
 
     private void createPstmtInsert() throws SQLException {
