@@ -1,6 +1,6 @@
-package main;
+package at.duspau.matura.client.main;
 
-import database.Database;
+import at.duspau.matura.server.*;
 
 import java.sql.SQLException;
 

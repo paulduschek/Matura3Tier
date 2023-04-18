@@ -1,4 +1,4 @@
-package database;
+package at.duspau.matura.server;
 
 import java.io.FileInputStream;
 import java.sql.*;
@@ -14,12 +14,12 @@ public class Database {
     private String username;
     private String password;
     private PreparedStatement pstmtSelectNameDate;
-    private PreparedStatement pstmtSelectAll;
+    private PreparedStatement pstmSelectAvSeats;
     private PreparedStatement pstmtInsert;
     private PreparedStatement pstmtUpdate;
+    private PreparedStatement pstmtUpdateSeats;
 
     private Database() {
-        // DB-Properties laden
         try (FileInputStream in = new FileInputStream("dbconnect.properties");) {
             Properties prop = new Properties();
             prop.load(in);
@@ -28,9 +28,8 @@ public class Database {
             username = prop.getProperty("username");
             password = prop.getProperty("password");
 
-            // Alles da?
             if (driver == null || url == null || username == null || password == null) {
-                throw new Exception("Fehler! Property File muss driver, url, username, password enthalten!");
+                throw new Exception("Error! missing properties in dbconnect");
             }
         }
         catch (Exception e) {
@@ -38,7 +37,6 @@ public class Database {
             System.exit(1);
         }
 
-        // Verbindung erstellen
         try {
             connection = DriverManager.getConnection(url, username, password);
             statement = connection.createStatement();
@@ -56,10 +54,11 @@ public class Database {
     public static void open(boolean createPrepStatements) throws SQLException {
         instance = new Database();
         if(createPrepStatements){
-            instance.createPstmtSelectNameDate();
+            instance.createPstmtSelectNameDateId();
             instance.createPstmtInsert();
             instance.createPstmtUpdate();
-            instance.createPstmtSelectAll();
+            instance.createPstmtSelectAvSeats();
+            instance.createPstmtUpdateAvSeats();
         }
     }
 
@@ -85,8 +84,8 @@ public class Database {
         return pstmtSelectNameDate;
     }
 
-    public PreparedStatement getPstmtSelectAll() {
-        return pstmtSelectAll;
+    public PreparedStatement getPstmSelectAvSeats() {
+        return pstmSelectAvSeats;
     }
 
     public PreparedStatement getPstmtInsert() {
@@ -97,15 +96,28 @@ public class Database {
         return pstmtUpdate;
     }
 
-
-    private void createPstmtSelectAll() throws SQLException {
-        String sql = " select name, date, numOfSeats from Event ";
-
-        pstmtSelectAll = connection.prepareStatement(sql);
+    public PreparedStatement getPstmtUpdateSeats() {
+        return pstmtUpdateSeats;
     }
 
-    private void createPstmtSelectNameDate() throws SQLException {
-        String sql = " select name, date from Event";
+    public void setPstmtUpdateSeats(PreparedStatement pstmtUpdateSeats) {
+        this.pstmtUpdateSeats = pstmtUpdateSeats;
+    }
+
+    private void createPstmtSelectAvSeats() throws SQLException {
+        String sql = " select numOfSeats from Event where id = ?";
+
+        pstmSelectAvSeats = connection.prepareStatement(sql);
+    }
+
+    private void createPstmtUpdateAvSeats() throws SQLException {
+        String sql = "update Event set numOfSeats = ? where id = ?";
+
+        pstmtUpdateSeats = connection.prepareStatement(sql);
+    }
+
+    private void createPstmtSelectNameDateId() throws SQLException {
+        String sql = " select id, name, date from Event";
         pstmtSelectNameDate = connection.prepareStatement(sql);
     }
 
