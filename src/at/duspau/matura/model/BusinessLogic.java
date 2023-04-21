@@ -71,9 +71,14 @@ public class BusinessLogic{
         return isSuccess;
     }
 
-    public void terminateClientSocket() throws IOException {
+    public void terminateClientSocket() {
         Request request = new Request(true);
-        oos.writeObject(request);
+        try{
+            oos.writeObject(request);
+        }
+        catch (IOException e){
+            System.out.println("[Error] when writing object for terminating to server");
+        }
         System.out.println("[Client] sent request to terminate client");
     }
 

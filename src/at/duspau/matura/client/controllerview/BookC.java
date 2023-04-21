@@ -48,26 +48,42 @@ public class BookC {
     }
 
     @FXML
-    public void initialize() throws InterruptedException, IOException, ClassNotFoundException {
+    public void initialize() {
         update();
     }
 
-    public void update() throws IOException, ClassNotFoundException {
+    public void update() {
         //model.setDoUpdate(true);
-        model.updateList();
+        try{
+            model.updateList();
+        }
+        catch (IOException e){
+            error("Error when sending object to server");
+        }
+        catch(ClassNotFoundException e){
+            error("Error when reading events from database");
+        }
         eventCB.setItems(FXCollections.observableArrayList(model.getEventsForCb()));
     }
 
     @FXML
-    public void book() throws IOException, ClassNotFoundException {
+    public void book(){
         seatsToBook = Integer.parseInt(seatsTF.getText());
         currentEvent = (String) eventCB.getValue();
         System.out.println(currentEvent);
-        if(model.bookSeats(seatsToBook, currentEvent)){
-            info("Seat booekd!");
+        try{
+            if(model.bookSeats(seatsToBook, currentEvent)){
+                info("Seat booked!");
+            }
+            else{
+                error("Seat taken!");
+            }
         }
-        else{
-            error("Seat taken!");
+        catch (IOException e){
+            error("Error when sending object to server");
+        }
+        catch(ClassNotFoundException e){
+            error("Error when reading events from database");
         }
     }
 

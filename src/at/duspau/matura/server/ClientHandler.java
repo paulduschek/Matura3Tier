@@ -18,15 +18,13 @@ import java.util.Vector;
 
 public class ClientHandler extends Thread{
     private final Socket clientSocket;
-    private Vector<Event> events = new Vector<>();
     private ImportEvents importEvents = new ImportEvents();
 
     private final String UPDATE_LIST= "updateList";
     private final String BOOK_SEATS = "bookSeats";
 
-    public ClientHandler(Socket clientSocket, Vector<Event> events) {
+    public ClientHandler(Socket clientSocket) {
         this.clientSocket = clientSocket;
-        this.events = events;
     }
 
     @Override
