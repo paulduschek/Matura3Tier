@@ -18,6 +18,7 @@ public class MainCreateDb {
                     ")");
 
             System.out.println("DB initialized successfully");
+            // close this particular instance again otherwise there would be a problem with having 2 instances
             Database.close();
         }catch (SQLException e) {
             e.printStackTrace();

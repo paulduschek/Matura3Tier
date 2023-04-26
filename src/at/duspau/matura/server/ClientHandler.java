@@ -3,8 +3,6 @@ package at.duspau.matura.server;
 import at.duspau.matura.client.common.Booking;
 import at.duspau.matura.client.common.Request;
 import at.duspau.matura.client.common.Response;
-import at.duspau.matura.model.Event;
-import at.duspau.matura.model.ImportEvents;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -14,11 +12,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Vector;
 
+// extends thread to handle multiple clients at the same time with a thread pool
 public class ClientHandler extends Thread{
     private final Socket clientSocket;
-    private ImportEvents importEvents = new ImportEvents();
 
     private final String UPDATE_LIST= "updateList";
     private final String BOOK_SEATS = "bookSeats";

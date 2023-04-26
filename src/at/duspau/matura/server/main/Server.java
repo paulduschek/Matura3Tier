@@ -1,6 +1,5 @@
 package at.duspau.matura.server.main;
 
-import at.duspau.matura.model.Event;
 import at.duspau.matura.model.ImportEvents;
 import at.duspau.matura.server.*;
 
@@ -14,10 +13,11 @@ import java.util.concurrent.Executors;
 
 public class Server {
     public static void main(String[] args) {
+        // adds new threads to the pool, if necessary reuses old interrupted ones to better performance
         ExecutorService executorService = Executors.newCachedThreadPool();
         String wantsToImport = "";
 
-        // open at.duspau.matura.server.database
+        // open database singleton
         try {
             Database.open(true);
             System.out.println("[Server] Database connection opened");
@@ -36,8 +36,10 @@ public class Server {
                 ImportEvents importEvents = new ImportEvents();
                 importEvents.tryImport();
             }
+            System.out.println("[Server] waiting for client to connect");
 
             while (true) {
+                // accept blocks until client starts connection with server socket on port 5000
                 Socket clientSocket = serverSocket.accept();
                 executorService.execute(new ClientHandler(clientSocket));
             }

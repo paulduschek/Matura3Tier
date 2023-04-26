@@ -11,7 +11,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class BusinessLogic{
-    private boolean doUpdate;
     private ArrayList<String> eventsForCb;
     private String bookingStatus;
 
@@ -24,7 +23,6 @@ public class BusinessLogic{
     private final String BOOK_SEATS = "bookSeats";
 
     public BusinessLogic(){
-        doUpdate = false;
         try{
             socket = new Socket("localhost", 5000);
             oos = new ObjectOutputStream(socket.getOutputStream());
@@ -40,7 +38,6 @@ public class BusinessLogic{
         Request request = new Request(UPDATE_LIST, false);
         oos.writeObject(request);
         System.out.println("[Client] sent request to update list");
-        setDoUpdate(false);
 
         Response response = (Response) ois.readObject();
         if(response != null){
@@ -80,14 +77,6 @@ public class BusinessLogic{
             System.out.println("[Error] when writing object for terminating to server");
         }
         System.out.println("[Client] sent request to terminate client");
-    }
-
-    public boolean isDoUpdate() {
-        return doUpdate;
-    }
-
-    public void setDoUpdate(boolean doUpdate) {
-        this.doUpdate = doUpdate;
     }
 
     public ArrayList<String> getEventsForCb() {

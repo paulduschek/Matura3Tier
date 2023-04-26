@@ -1,5 +1,7 @@
 package at.duspau.matura.model;
 
+import at.duspau.matura.server.Database;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.sql.*;
@@ -7,10 +9,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class ImportEvents {
-        public void tryImport(){
+    public void tryImport(){
         try(BufferedReader br = new BufferedReader(new FileReader("events.txt"))){
             String currentLine = "";
-            String in[];
+            String[] in;
             while ((currentLine = br.readLine()) != null){
                 in = currentLine.split(",");
                 Event event = new Event(in[0], new Timestamp(formatDate(in[1]).getTime()), Integer.parseInt(in[2]));
@@ -23,12 +25,12 @@ public class ImportEvents {
     }
 
     public static void insert(String name, Timestamp date, int numOfSeats) throws SQLException {
-        PreparedStatement preparedStatementInsert = at.duspau.matura.server.Database.getInstance().getPstmtInsert();
+        PreparedStatement preparedStatementInsert = Database.getInstance().getPstmtInsert();
         preparedStatementInsert.setString(1, name);
         preparedStatementInsert.setTimestamp(2, date);
         preparedStatementInsert.setInt(3, numOfSeats);
         preparedStatementInsert.execute();
-        System.out.println("Inserted event successfully");
+        System.out.println("[Server] Inserted event successfully");
         System.out.printf("Event: %s, %s, %d %n", name, date.toString(), numOfSeats);
     }
 

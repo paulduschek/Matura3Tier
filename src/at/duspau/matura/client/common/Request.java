@@ -2,8 +2,9 @@ package at.duspau.matura.client.common;
 
 import java.io.Serializable;
 
+// has to implement serializable otherwise it cant be written via object streams
 public class Request implements Serializable {
-    private String message = "";
+    private String message;
     private boolean closeConnection;
 
     private int howMany;
