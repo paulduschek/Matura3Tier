@@ -1,4 +1,4 @@
-package at.duspau.matura.client.common;
+package at.duspau.matura.common;
 
 import java.io.Serializable;
 

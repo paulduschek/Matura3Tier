@@ -1,7 +1,4 @@
-package at.duspau.matura.client.common;
-
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+package at.duspau.matura.common;
 
 import java.io.Serializable;
 import java.util.ArrayList;

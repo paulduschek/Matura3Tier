@@ -1,12 +1,10 @@
 package at.duspau.matura.server;
 
-import at.duspau.matura.client.common.Booking;
-import at.duspau.matura.client.common.Request;
-import at.duspau.matura.client.common.Response;
+import at.duspau.matura.common.Booking;
+import at.duspau.matura.common.Request;
+import at.duspau.matura.common.Response;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,38 +24,60 @@ public class ClientHandler extends Thread{
 
     @Override
     public void run() {
-        try(ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
-            ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream())
+        try(//ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
+            //ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream())
+            DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
+            DataInputStream dis = new DataInputStream(clientSocket.getInputStream())
         ){
             System.out.println("[Server] Client connected");
 
             boolean closing = false;
             while (!closing) {
-                Request request = (Request) ois.readObject();
+                //Request request = (Request) ois.readObject();
                 System.out.println("[Server] got a request, checking it");
-                if(request.isCloseConnection()){
+                //if(request.isCloseConnection()){
+                if(dis.readBoolean()){
                     closing = true;
                 }
                 else{
-                    if(request.getMessage().equals(UPDATE_LIST)){
+                    System.out.println("[Server] client not terminated");
+                    String toDo = dis.readUTF();
+                    //if(request.getMessage().equals(UPDATE_LIST)){
+                    if(toDo.equals(UPDATE_LIST)){
                         System.out.println("[Server] got request to update event list, sending right now");
-                        Response response = new Response(getChoicesFromDatabase(), UPDATE_LIST);
-                        oos.writeObject(response);
+                        //Response response = new Response(getChoicesFromDatabase(), UPDATE_LIST);
+                        dos.writeUTF(UPDATE_LIST);
+                        dos.writeInt(getChoicesFromDatabase().size());
+                        for(int i = 0; i < getChoicesFromDatabase().size(); i++){
+                            dos.writeUTF(getChoicesFromDatabase().get(i));
+                            System.out.println("[Server] sent Event" + i+1);
+                        }
+                        //oos.writeObject(response);
                     }
-                    else if(request.getMessage().equals(BOOK_SEATS)){
+                    //else if(request.getMessage().equals(BOOK_SEATS)){
+                    else if(toDo.equals(BOOK_SEATS)){
                         System.out.println("[Server] got request to book seats, checking right now");
-                        if(isSeatAvailable(request.getHowMany(), request.getCurrentEvent())){
-                            Response response = new Response(Booking.OK.toString(), BOOK_SEATS);
-                            oos.writeObject(response);
+                        //if(isSeatAvailable(request.getHowMany(), request.getCurrentEvent())){
+                        int howMany = dis.readInt();
+                        String currentEvent = dis.readUTF();
+                        if(isSeatAvailable(howMany, currentEvent)){
+                            //Response response = new Response(Booking.OK.toString(), BOOK_SEATS);
+                            //oos.writeObject(response);
+                            dos.writeUTF(BOOK_SEATS);
+                            dos.writeUTF(Booking.OK.toString());
                         }
                         else{
-                            Response response = new Response(Booking.TAKEN.toString(), BOOK_SEATS);
-                            oos.writeObject(response);
+                            //Response response = new Response(Booking.TAKEN.toString(), BOOK_SEATS);
+                            //oos.writeObject(response);
+                            dos.writeUTF(BOOK_SEATS);
+                            dos.writeUTF(Booking.TAKEN.toString());
                         }
                     }
                 }
-            }
-            System.out.println("[Server] Client disconnected");
+            } //catch (IOException ex) {
+            //throw new RuntimeException(ex);
+        //}
+        System.out.println("[Server] Client disconnected");
         } catch (Exception e) {
             e.printStackTrace();
         }
