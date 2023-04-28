@@ -59,7 +59,7 @@ public class ClientHandler extends Thread{
                         }
                     }
                 }
-            } 
+            }
             System.out.println("[Server] Client disconnected");
         } catch (Exception e) {
             e.printStackTrace();
