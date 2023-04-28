@@ -1,8 +1,6 @@
 package at.duspau.matura.server;
 
 import at.duspau.matura.common.Booking;
-import at.duspau.matura.common.Request;
-import at.duspau.matura.common.Response;
 
 import java.io.*;
 import java.net.Socket;
@@ -24,60 +22,45 @@ public class ClientHandler extends Thread{
 
     @Override
     public void run() {
-        try(//ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
-            //ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream())
-            DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
+        try(DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
             DataInputStream dis = new DataInputStream(clientSocket.getInputStream())
         ){
             System.out.println("[Server] Client connected");
 
             boolean closing = false;
             while (!closing) {
-                //Request request = (Request) ois.readObject();
                 System.out.println("[Server] got a request, checking it");
-                //if(request.isCloseConnection()){
                 if(dis.readBoolean()){
                     closing = true;
                 }
                 else{
                     System.out.println("[Server] client not terminated");
                     String toDo = dis.readUTF();
-                    //if(request.getMessage().equals(UPDATE_LIST)){
                     if(toDo.equals(UPDATE_LIST)){
                         System.out.println("[Server] got request to update event list, sending right now");
-                        //Response response = new Response(getChoicesFromDatabase(), UPDATE_LIST);
                         dos.writeUTF(UPDATE_LIST);
                         dos.writeInt(getChoicesFromDatabase().size());
                         for(int i = 0; i < getChoicesFromDatabase().size(); i++){
                             dos.writeUTF(getChoicesFromDatabase().get(i));
                             System.out.println("[Server] sent Event" + i+1);
                         }
-                        //oos.writeObject(response);
                     }
-                    //else if(request.getMessage().equals(BOOK_SEATS)){
                     else if(toDo.equals(BOOK_SEATS)){
                         System.out.println("[Server] got request to book seats, checking right now");
-                        //if(isSeatAvailable(request.getHowMany(), request.getCurrentEvent())){
                         int howMany = dis.readInt();
                         String currentEvent = dis.readUTF();
                         if(isSeatAvailable(howMany, currentEvent)){
-                            //Response response = new Response(Booking.OK.toString(), BOOK_SEATS);
-                            //oos.writeObject(response);
                             dos.writeUTF(BOOK_SEATS);
                             dos.writeUTF(Booking.OK.toString());
                         }
                         else{
-                            //Response response = new Response(Booking.TAKEN.toString(), BOOK_SEATS);
-                            //oos.writeObject(response);
                             dos.writeUTF(BOOK_SEATS);
                             dos.writeUTF(Booking.TAKEN.toString());
                         }
                     }
                 }
-            } //catch (IOException ex) {
-            //throw new RuntimeException(ex);
-        //}
-        System.out.println("[Server] Client disconnected");
+            } 
+            System.out.println("[Server] Client disconnected");
         } catch (Exception e) {
             e.printStackTrace();
         }
