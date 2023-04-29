@@ -1,4 +1,4 @@
-package at.duspau.matura.model;
+package at.duspau.matura.client.model;
 
 import java.sql.Timestamp;
 

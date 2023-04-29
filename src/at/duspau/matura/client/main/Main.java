@@ -1,7 +1,7 @@
 package at.duspau.matura.client.main;
 
 import at.duspau.matura.client.controllerview.*;
-import at.duspau.matura.model.BusinessLogic;
+import at.duspau.matura.client.model.BusinessLogic;
 import javafx.application.Application;
 import javafx.stage.Stage;
 

@@ -3,6 +3,7 @@ package at.duspau.matura.common;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+@Deprecated
 public class Response implements Serializable {
     private ArrayList<String> eventsForCb;
     private String message;

@@ -3,6 +3,7 @@ package at.duspau.matura.common;
 import java.io.Serializable;
 
 // has to implement serializable otherwise it cant be written via object streams
+@Deprecated
 public class Request implements Serializable {
     private String message;
     private boolean closeConnection;

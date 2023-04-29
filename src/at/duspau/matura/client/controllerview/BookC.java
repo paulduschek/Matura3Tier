@@ -10,7 +10,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import at.duspau.matura.model.BusinessLogic;
+import at.duspau.matura.client.model.BusinessLogic;
 
 import java.io.IOException;
 
