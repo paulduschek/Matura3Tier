@@ -67,6 +67,8 @@ public class BookC {
         try{
             if(model.bookSeats(seatsToBook, currentEvent)){
                 info("Seat booked!");
+                seatsTF.setText("");
+                eventCB.setValue(null);
             }
             else{
                 error("Seat taken!");

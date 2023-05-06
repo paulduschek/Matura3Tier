@@ -8,15 +8,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.concurrent.locks.ReentrantLock;
 
 // extends thread to handle multiple clients at the same time with a thread pool
 public class ClientHandler extends Thread{
     private final Socket clientSocket;
+    private ReentrantLock lock;
 
     private final String UPDATE_LIST= "updateList";
     private final String BOOK_SEATS = "bookSeats";
 
-    public ClientHandler(Socket clientSocket) {
+    public ClientHandler(Socket clientSocket, ReentrantLock lock) {
+        this.lock = lock;
         this.clientSocket = clientSocket;
     }
 
@@ -102,9 +105,11 @@ public class ClientHandler extends Thread{
             if(rs.next()){
                 if(rs.getInt("numOfSeats") >= howMany){
                     PreparedStatement updatePstmt = Database.getInstance().getPstmtUpdateSeats();
+                    lock.lock();
                     updatePstmt.setInt(1, rs.getInt("numOfSeats") - howMany);
                     updatePstmt.setInt(2, currId);
                     updatePstmt.execute();
+                    lock.unlock();
                     System.out.println("[Server] saved booking changes to db");
                     System.out.printf("[Server] remaining seats: %d %n", rs.getInt("numOfSeats") - howMany);
 

@@ -10,11 +10,13 @@ import java.sql.SQLException;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Server {
     public static void main(String[] args) {
         // adds new threads to the pool, if necessary reuses old interrupted ones to better performance
         ExecutorService executorService = Executors.newCachedThreadPool();
+        ReentrantLock lock = new ReentrantLock();
         String wantsToImport = "";
 
         // open database singleton
@@ -41,7 +43,7 @@ public class Server {
             while (true) {
                 // accept blocks until client starts connection with server socket on port 5000
                 Socket clientSocket = serverSocket.accept();
-                executorService.execute(new ClientHandler(clientSocket));
+                executorService.execute(new ClientHandler(clientSocket, lock));
             }
         } catch (IOException e) {
             e.printStackTrace();
