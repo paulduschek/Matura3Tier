@@ -1,5 +1,6 @@
-package at.duspau.matura.client.model;
+package at.duspau.matura.server;
 
+import at.duspau.matura.client.model.Event;
 import at.duspau.matura.server.Database;
 
 import java.io.BufferedReader;

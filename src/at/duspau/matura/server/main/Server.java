@@ -1,6 +1,6 @@
 package at.duspau.matura.server.main;
 
-import at.duspau.matura.client.model.ImportEvents;
+import at.duspau.matura.server.ImportEvents;
 import at.duspau.matura.server.*;
 
 import java.io.IOException;
